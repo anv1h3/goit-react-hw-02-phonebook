@@ -9,7 +9,7 @@ export class App extends React.Component {
     filter: '',
   };
 
-  AddingContact = contact => {
+  addingContact = contact => {
     this.setState(({ contacts }) => ({
       contacts: [...contacts, contact],
     }));
