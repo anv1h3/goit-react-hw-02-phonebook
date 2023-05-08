@@ -1,59 +1,61 @@
-import React from 'react';
-import Filter from './Filter/Filter';
-import ContactList from './ContactList/ContactList';
-import { ContactForm } from './ContactForm/ContactForm';
+import { Component } from "react";
+import { nanoid } from 'nanoid';
+import { ContactForm } from "./ContactForm/ContactForm";
+import { ContactList } from "./ContactList/ContactList";
+import { Filter } from "./Filter/Filter";
 
-export class App extends React.Component {
+export class App extends Component {
   state = {
     contacts: [],
-    filter: '',
+    filter: ''
   };
 
-  addingContact = contact => {
-    this.setState(({ contacts }) => ({
-      contacts: [...contacts, contact],
+  createContact = data => {
+    const checkNewContact = this.state.contacts.find(({name})=>name===data.name);
+    if (checkNewContact){
+      return alert (`${data.name} is already in contacts`)
+    };
+    const newContact = {
+      id: nanoid(),
+      ...data,
+    };
+
+    this.setState(({contacts})=>({
+      contacts: [...contacts, newContact]
     }));
   };
 
-  changeFIlter = e => {
-    this.setState({ filter: e.currentTarget.value });
+  handleDelete = (id) => {
+    this.setState((prev)=>({
+      contacts: prev.contacts.filter((contact)=>contact.id!==id),
+    }))
   };
 
-  getVisibleContact = () => {
-    const { filter, contacts } = this.state;
-    const normalizeFilter = filter.toLowerCase();
-
-    return contacts.filter(el =>
-      el.name.toLowerCase().includes(normalizeFilter)
-    );
-  };
-
-  deleteContacts = contactId => {
-    this.setState(prevState => {
-      return {
-        contacts: prevState.contacts.filter(el => el.id !== contactId),
-      };
-    });
-  };
+  filterContacts = (e) =>{
+    this.setState({filter: e.currentTarget.value.toLowerCase()});
+  }
 
   render() {
-    const { filter, contacts } = this.state;
-    const visibleContact = this.getVisibleContact();
+    const {contacts, filter}=this.state;
+    const filteredContacts = contacts.filter(contact=>contact.name.toLowerCase().includes(this.state.filter));
 
     return (
-      <>
-        <div>
-          <h1>Phonebook</h1>
-          <ContactForm add={this.AddingContact} contacts={contacts} />
+      <div
+        style={{
+          // height: '100vh',
+          fontSize: 20,
+          color: '#010101',
+          margin: 30,
+        }}
+      >
+        <h2>Phonebook</h2>
+        <ContactForm createContact={this.createContact} />
 
-          <h2>Contacts</h2>
-          <Filter value={filter} onChange={this.changeFIlter} />
-          <ContactList
-            visibleContact={visibleContact}
-            deleteContacts={this.deleteContacts}
-          />
-        </div>
-      </>
+        <h2>Contacts</h2>
+
+        <Filter onChange={this.filterContacts} value = {filter} />
+        <ContactList handleDelete= {this.handleDelete} contactsList = {filteredContacts} />
+      </div>
     );
   }
-}
+};

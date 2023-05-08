@@ -1,21 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FilterInput, FilterLabel } from './Filter.styled';
+export const Filter = ({value, onChange})=>(
 
-const Filter = ({ value, onChange }) => {
-  return (
-    <>
-      <FilterLabel htmlFor="">
-        Find contacts by name
-        <FilterInput type="text" value={value} onChange={onChange} />
-      </FilterLabel>
-    </>
-  );
-};
+    <label htmlFor='InputFilter'
+    style={{
+display:"inline-grid",
+    }}>
+	Find contacts by name
+  <input type="text"
+    name = "filter"
+    id = "InputFilter"
+    value={value}
+    onChange={onChange}
+    style={{
+      marginTop: 15,
+      height: 30,
+          }}/>
+	</label>
+)
 
-Filter.propTypes = {
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
-
-export default Filter;
